@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['prefix' => 'report'], function() {
+    Route::post('process-data', 'ReportController@processReportData')->name('report.process-data');
+    Route::get('download', 'ReportController@downloadReport')->name('report.download');
 });
