@@ -55,6 +55,10 @@ Rode as migrações
 Limpe o cache do config
 
     docker exec -it queues-laravel_app_1 php artisan config:cache
+    
+Storage link
+
+    docker exec -it queues-laravel_app_1 php artisan storage:link
 
 Rodar os testes
 
