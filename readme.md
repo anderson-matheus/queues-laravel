@@ -29,15 +29,15 @@ Instalação
 
 Instalação das dependências do composer
 
-    docker exec -it container_name composer install
+    docker exec -it queues-laravel_app_1 composer install
 
 Faça uma cópia do arquivo .env.example para .env
 
-    docker exec -it container_name cp .env.example .env
+    docker exec -it queues-laravel_app_1 cp .env.example .env
 
 Gere a key da aplicação
 
-    docker exec -it container_name php artisan key:generate
+    docker exec -it queues-laravel_app_1 php artisan key:generate
 
 Configure as variáveis de ambiente para o banco de dados no .env
 
@@ -50,18 +50,18 @@ Configure as variáveis de ambiente para o banco de dados no .env
 
 Rode as migrações
 
-    docker exec -it container_name php artisan migrate
+    docker exec -it queues-laravel_app_1 php artisan migrate
 
 Limpe o cache do config
 
-    docker exec -it container_name php artisan config:cache
+    docker exec -it queues-laravel_app_1 php artisan config:cache
 
 Rodar os testes
 
-    docker exec -it container_name ./vendor/bin/phpunit
+    docker exec -it queues-laravel_app_1 ./vendor/bin/phpunit
     
 Processar dados da fila
 
-    docker exec -it container_name php artisan queue:work --tries=1
+    docker exec -it queues-laravel_app_1 php artisan queue:work --tries=1
 
 Acesse o projeto na seguinte url http://localhost:8080
