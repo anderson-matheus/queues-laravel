@@ -8,6 +8,8 @@ services:
       - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
     ports:
       - "8080:80"
+    networks:
+      - app-network
 
   app:
     build:
@@ -16,20 +18,31 @@ services:
     volumes:
       - ./:/var/www
     working_dir: /var/www
+    networks:
+      - app-network
 
   db:
     image: mysql:5.7
+    container_name: queues_laravel
     ports:
       - "3388:3306"
     volumes:
-      - ./docker-volumes-data/db:/var/lib/database
+      - ./docker-volumes-data/db:/var/lib/mysql
     environment:
       MYSQL_DATABASE: queues_laravel
       MYSQL_ROOT_PASSWORD: 123456
+    networks:
+      - app-network
 
   redis:
     image: redis
     volumes:
       - ./docker-volumes-data/redis:/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
       
