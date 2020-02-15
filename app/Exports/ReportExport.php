@@ -3,9 +3,8 @@
 namespace App\Exports;
 
 use App\Exports\Contracts\ReportExportInterface;
-use Storage;
-use Illuminate\Support\Arr;
 use File;
+use Illuminate\Support\Arr;
 
 class ReportExport implements ReportExportInterface
 {
@@ -18,7 +17,7 @@ class ReportExport implements ReportExportInterface
 
     public function makeHeader($data)
     {
-        if(!File::exists($this->path)) {
+        if (!File::exists($this->path)) {
             File::put($this->path, "");
         }
 
@@ -29,10 +28,9 @@ class ReportExport implements ReportExportInterface
         fclose($file);
 
         $fields = [];
-        foreach ($data as $item) {
-            $item = (array) json_decode($item);
-            $fields[] = array_keys($item);
-        }
+        $data = (array) json_decode($data);
+        $fields[] = array_keys($data);
+
         $fields = Arr::flatten($fields);
         $fields = array_filter(array_unique(array_merge($header, $fields)));
 
@@ -41,20 +39,20 @@ class ReportExport implements ReportExportInterface
             $rows[0] = implode(';', $fields) . "\n";
             file_put_contents($this->path, implode($rows));
         } else {
-            $file  = fopen($this->path, 'w');
+            $file = fopen($this->path, 'w');
             fputcsv($file, $fields, ';');
             fclose($file);
         }
-        
+
         $this->fields = $fields;
     }
 
     public function appendOrWriteFile()
     {
-        if(File::exists($this->path)) {
+        if (File::exists($this->path)) {
             $this->file = fopen($this->path, 'a');
         } else {
-            $this->file  = fopen($this->path, 'w');
+            $this->file = fopen($this->path, 'w');
         }
     }
 
@@ -62,18 +60,15 @@ class ReportExport implements ReportExportInterface
     {
         $rows = [];
         $i = 0;
-        foreach ($data as $item) {
-            $item = (array) json_decode($item);
-            foreach ($this->fields as $field) {
-                $rows[$i][] = data_get($item, $field, '');
-            }
-            $i++;
+        $data = (array) json_decode($data);
+        foreach ($this->fields as $field) {
+            $rows[$i][] = data_get($data, $field, '');
         }
         $this->rows = $rows;
     }
 
-    public function export(array $data)
-    {       
+    public function export(string $data)
+    {
         $this->setPath();
         $this->makeHeader($data);
         $this->appendOrWriteFile();
@@ -81,7 +76,7 @@ class ReportExport implements ReportExportInterface
 
         $rows = $this->rows;
         $fields = $this->fields;
-        
+
         foreach ($rows as $row) {
             fputcsv($this->file, $row, ';');
         }
@@ -97,7 +92,7 @@ class ReportExport implements ReportExportInterface
         if ($rows > 2) {
             $header = array_shift($rows);
             $last = array_pop($rows);
-    
+
             $report = array_merge($report, [$header]);
             $report = array_merge($report, [$last]);
             $report = array_merge($report, $rows);
